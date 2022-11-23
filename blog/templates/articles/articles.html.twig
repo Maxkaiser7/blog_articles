@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table>
+        {% for article in articles %}
+            <tr>
+                <td><span><a class="article-a" href="{{ path("showOne", {id: article.id}) }}">{{ article.titre }}</a></span></td>
+            </tr>
+        {% endfor %}
+    </table>
+    <a class="magic-button" href="{{ path('findContent') }}">Articles magiques</a>
+{% endblock %}

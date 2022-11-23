@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for article in articles %}
+    <div class="solo-art">
+    <div class="art-text">
+        <h1>{{ article.titre }}</h1>
+        <p class="desc">{{ article.description }}</p>
+        <p class="date">Créé le <i>{{ article.dateCreation|date }}</i></p>
+    </div>
+    {% endfor %}
+{% endblock %}

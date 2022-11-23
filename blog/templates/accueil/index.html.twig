@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AccueilController!{% endblock %}
+
+{% block body %}
+
+    <div class="title-wrapper">
+        <h1>Blog Articles</h1>
+        <h2>Chercher par date</h2>
+
+    </div>
+    <div class="date-container">
+    {% for article in articles %}
+        <div class="dates">
+            <a href="{{ path('findByYear', {year:article.dateCreation|date('Y') }) }}">{{ article.dateCreation|date('Y') }}</a>
+        </div>
+    {% endfor %}
+    </div>
+
+{% endblock %}

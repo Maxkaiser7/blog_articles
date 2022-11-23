@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+   <div class="solo-art">
+        <div class="art-text">
+            <h1>{{ articles.titre }}</h1>
+            <p class="desc">{{ articles.description }}</p>
+                <p class="date">Créé le <i>{{ articles.dateCreation|date }}</i></p>
+        </div>
+    </div>
+
+
+{% endblock %}
