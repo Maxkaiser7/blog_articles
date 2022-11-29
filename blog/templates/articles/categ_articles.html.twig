@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <main>
+    {% for categorie in categories %}
+        <div class="categ-header">
+            <h2>{{ categorie }}</h2>
+        </div>
+    {% endfor %}
+        <table>
+            {% for article in articles %}
+                <tr>
+                    <td><span><a class="article-a"
+                                 href="{{ path("showOne", {id: article.id}) }}">{{ article.titre }}</a></span></td>
+                    <td><span>{{ article.votesString }}</span>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </main>
+{% endblock %}

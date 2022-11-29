@@ -23,6 +23,18 @@ class Articles
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
 
+    #[ORM\Column]
+    private ?int $votes = 0;
+
+    #[ORM\Column]
+    private ?int $categoryId = null;
+
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
+
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -63,4 +75,39 @@ class Articles
 
         return $this;
     }
+
+    public function getVotes(): ?int
+    {
+        return $this->votes;
+    }
+
+    public function setVotes(int $votes): self
+    {
+        $this->votes = $votes;
+
+        return $this;
+    }
+    public function getVotesString() : string
+    {
+        $prefix = $this->getVotes() >=0 ? '+' : '-';
+        return sprintf('%s %d', $prefix, abs($this->getVotes()));
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getCategoryId(): ?Category
+    {
+        return $this->categoryId;
+    }
+
 }

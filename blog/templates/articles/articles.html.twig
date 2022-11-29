@@ -1,10 +1,28 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <ul class="category-list">
+        {% for categorie in categories %}
+        <li>
+            <a href="{{ path("articlesByCateg", {id: categorie.id}) }}">{{ categorie }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+
     <table>
         {% for article in articles %}
             <tr>
-                <td><span><a class="article-a" href="{{ path("showOne", {id: article.id}) }}">{{ article.titre }}</a></span></td>
+                <td><span><a class="article-a"
+                             href="{{ path("showOne", {id: article.id}) }}">{{ article.titre }}</a></span></td>
+                <td><span>{{ article.votesString }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="category-article"><a href="#">
+                            {{ article.category }}
+                        </a></span>
+                </td>
             </tr>
         {% endfor %}
     </table>

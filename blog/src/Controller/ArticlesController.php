@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
+use App\Form\ArticlesType;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,6 +12,7 @@ use App\Entity\Articles;
 use Doctrine\ORM\EntityManagerInterface;
 use DateTime;
 use Symfony\Component\HttpFoundation\Request;
+
 
 class ArticlesController extends AbstractController
 {
@@ -48,21 +51,44 @@ class ArticlesController extends AbstractController
     public function afficher(EntityManagerInterface $entityManager): Response
     {
         $repository = $entityManager->getRepository(Articles::class);
-
         $articles = $repository->findAll();
+
+        $repository = $entityManager->getRepository(Category::class);
+        $categories = $repository->findAll();
+
         return $this->render('articles/articles.html.twig', [
-            'articles' => $articles
+            'articles' => $articles,
+            'categories' => $categories
         ]);
     }
 
+    /**
+     * @Route ("/articles/categories/{id}", name="articlesByCateg")
+     */
+    public function afficherArticlesByCateg($id, EntityManagerInterface $entityManager): Response
+    {
+        $repository = $entityManager->getRepository(Category::class);
+        $categories = $repository->findById($id);
+
+        $repository = $entityManager->getRepository(Articles::class);
+        $articles = $repository->findByCategoryId($id);
+
+
+        return $this->render('articles/categ_articles.html.twig', [
+            'categories' => $categories,
+            'articles' => $articles
+        ]);
+    }
     /**
      * @Route("/articles/afficher/{id}", name="showOne")
      */
     public function showOne(Articles $article): Response
     {
 
+        $category = $article->getCategory();
         return $this->render('articles/afficher.html.twig', [
-            'articles' => $article
+            'articles' => $article,
+            'category' => $category
         ]);
 
 
@@ -93,6 +119,61 @@ class ArticlesController extends AbstractController
         return $this->render('articles/magic_articles.html.twig', [
             'articles' => $articles
         ]);
-
     }
+
+    /**
+     * @Route ("/articles/afficher/{id}/voter", name="article_vote", methods="POST")
+     */
+    public function articleVote(Articles $articles, Request $request, EntityManagerInterface $entityManager)
+    {
+
+        $direction = $request->request->get('direction');
+        if ($direction === 'up') {
+             $articles->setVotes($articles->getVotes() + 1);
+            //$articles->upVote();
+        } elseif ($direction === 'down') {
+             $articles->setVotes($articles->getVotes() - 1);
+            // $articles->downVote();
+        }
+        $entityManager->flush();
+
+        // affichera votre URL article/voter
+        /*return $this->render('articles/afficher.html.twig', [
+            'articles' => $articles,
+            ]);*/
+
+        // redirige vers la route d’affichage d’un article
+        return $this->redirectToRoute('showOne', [
+            'id' => $articles->getId()
+        ]);
+    }
+
+    /**
+     * @Route("/articles/add", name="addForm")
+     */
+    public function add(Request $request){
+        $article = new Articles();
+        $article->setDateCreation(new DateTime());
+        $form = $this->createForm(ArticlesType::class, $article);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            //hold les valeurs
+            $article = $form->getData();
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($article);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('showOne', [
+                'id' => $article->getId()
+            ]);
+
+        }
+
+        return $this->render('articles/add.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+
 }

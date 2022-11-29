@@ -4,8 +4,21 @@
    <div class="solo-art">
         <div class="art-text">
             <h1>{{ articles.titre }}</h1>
+            <a href="#" class="category-link">{{ articles.category }}
+            </a>
             <p class="desc">{{ articles.description }}</p>
                 <p class="date">Créé le <i>{{ articles.dateCreation|date }}</i></p>
+            <form action="{{ path('article_vote', { id: articles.id }) }}" method="POST">
+                <div class="vote">
+                    <button class="vote-down btn btn-link" name="direction" value="down">
+                        <img src={{ asset('pictures/down-arrow.png')}} alt="down-arrow">
+                    </button>
+                    <span>{{ articles.votesString }}</span>
+                    <button class="vote-up btn btn-link" name="direction" value="up">
+                        <img src={{ asset('pictures/up-arrow.png')}} alt="up-arrow">
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 

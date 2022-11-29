@@ -75,6 +75,17 @@ class ArticlesRepository extends ServiceEntityRepository
             ->getResult()
             ;
     }
+    public function findByCategoryId($id){
+
+        return $this->createQueryBuilder('a')
+            ->andWhere("a.categoryId = :id")
+            ->setParameter('id', $id)
+            ->orderBy('a.dateCreation', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
+    }
 
 
 
